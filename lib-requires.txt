@@ -1,0 +1,9 @@
+libz
+libdl
+librt
+libm
+libnuma 
+libstdc++
+libpthread
+libgcc_s
+libc
