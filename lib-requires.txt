@@ -2,7 +2,7 @@ libz
 libdl
 librt
 libm
-libnuma 
+libnuma
 libstdc++
 libpthread
 libgcc_s

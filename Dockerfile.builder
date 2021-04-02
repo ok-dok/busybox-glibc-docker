@@ -111,7 +111,7 @@ RUN set -eux; \
 		rootfs/bin/busybox \
 		rootfs/bin/getconf \
 		/lib/"$gccMultiarch"/libnss*.so.* \
-# needed libs of glibc: https://stackoverflow.com/a/11210463/433558
+# needed libs of glibc, such as libc, libthread and others: https://stackoverflow.com/a/11210463/433558
 		$requiredLibs \
     ; \
 	while [ "$#" -gt 0 ]; do \
