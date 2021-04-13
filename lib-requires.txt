@@ -7,3 +7,7 @@ libstdc++
 libpthread
 libgcc_s
 libc
+libelf
+libmnl
+libcap
+libpcre
