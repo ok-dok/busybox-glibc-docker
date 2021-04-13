@@ -25,7 +25,21 @@ After build, it will generate two images: "busybox:glibc-builder" and "busybox:g
 
 busybox:glibc镜像大小约28M。
 
-## 说明
+## 更新说明
+
+---
+2021-4-13更新，新增类库支持：
+
+- libelf*.so.*
+- libmnl*.so.*
+- libcap*.so.*
+- libpcre*.so.*
+
+并增加了ip、ethtool命令，上面这几个类库也是为这两个命令提供支持的。
+
+---
+2021-4-2更新说明。
+
 目前，构建的busybox镜像中含有以下类库：
 
 - libnss*.so.*
