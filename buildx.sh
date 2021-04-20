@@ -11,7 +11,7 @@ set -x
 # docker buildx build -t "$base-amd64" --platform=linux/amd64 -o type=docker -f Dockerfile.builder "$dir"
 
 # 直接构建多架构镜像，并推送到私有harbor镜像仓库（harbor2.0以上才支持多架构镜像）
-docker buildx build -t "$base" --platform=linux/amd64,linux/arm64 -f Dockerfile.builder "$dir" --push
+docker buildx build -t "$base" --platform=linux/amd64,linux/arm64 -f Dockerfile "$dir" --push
 
 # 验证镜像不同架构版本
 # imglist=$(docker buildx imagetools inspect "$base" | grep -E -o "${base}@sha256.*")
