@@ -211,9 +211,3 @@ RUN set -eux; \
 RUN cp -L /etc/resolv.conf rootfs/etc/; \
         chroot rootfs /bin/sh -xec 'nslookup google.com'; \
         rm rootfs/etc/resolv.conf
-
-#--------------------------
-# stage2: busybox
-FROM scratch as busybox
-COPY --from=builder /usr/src/busybox/rootfs/* /
-CMD ["sh"]

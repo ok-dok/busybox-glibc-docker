@@ -1,0 +1,4 @@
+# stage2: busybox
+FROM scratch as busybox
+COPY --from=builder /usr/src/busybox/rootfs/* /
+CMD ["sh"]
