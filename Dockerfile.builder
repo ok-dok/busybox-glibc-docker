@@ -30,14 +30,14 @@ RUN set -eux; \
 # sub   1024g/2C766641 2006-12-12
 RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys C9E9416F76E610DBD09D040F47B70C55ACC9965B
 
-ENV BUSYBOX_VERSION 1.32.1
-ENV BUSYBOX_SHA256 9d57c4bd33974140fd4111260468af22856f12f5b5ef7c70c8d9b75c712a0dee
+ENV BUSYBOX_VERSION="1.33.1"
 
 RUN set -eux; \
         tarball="busybox-${BUSYBOX_VERSION}.tar.bz2"; \
+	busyboxSha256=$(curl "https://busybox.net/downloads/$tarball.sha256" | cut -d ' ' -f 1); \
         curl -fL -o busybox.tar.bz2.sig "https://busybox.net/downloads/$tarball.sig"; \
         curl -fL -o busybox.tar.bz2 "https://busybox.net/downloads/$tarball"; \
-        echo "$BUSYBOX_SHA256 *busybox.tar.bz2" | sha256sum -c -; \
+        echo "$busyboxSha256 *busybox.tar.bz2" | sha256sum -c -; \
         gpg --batch --verify busybox.tar.bz2.sig busybox.tar.bz2; \
         mkdir -p /usr/src/busybox; \
         tar -xf busybox.tar.bz2 -C /usr/src/busybox --strip-components 1; \
@@ -142,11 +142,11 @@ RUN set -eux; \
 RUN set -eux; \
         cp /bin/ip rootfs/bin/; \
         cp /sbin/ethtool rootfs/bin/; \
-        chmod -R +x rootfs/bin/*; 
+        chmod -R +x rootfs/bin/ip rootfs/bin/ethtool; 
 
 # install a few extra files from buildroot (/etc/passwd, etc)
 RUN set -eux; \
-        buildrootVersion='2021.02'; \
+        buildrootVersion='2021.05'; \
         for file in \
                 system/device_table.txt \
                 system/skeleton/etc/group \
@@ -209,5 +209,6 @@ RUN set -eux; \
 
 # test and make sure DNS works too
 RUN cp -L /etc/resolv.conf rootfs/etc/; \
-        chroot rootfs /bin/sh -xec 'nslookup google.com'; \
-        rm rootfs/etc/resolv.conf
+	echo "nameserver 114.114.114.114" >> rootfs//etc/resolv.conf; \
+        chroot rootfs /bin/sh -xec 'nslookup baidu.com';
+

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 registry="registry.dclingcloud.com/library"
+version="1.33.1"
 tag="glibc"
 set -Eeuo pipefail
-base="${registry}/busybox:${tag}"
+base="${registry}/busybox:${version}-${tag}"
 dir="."
 set -x
 
@@ -18,7 +19,13 @@ cat Dockerfile.run  >> Dockerfile
 # 直接构建多架构镜像，并推送到私有harbor镜像仓库（harbor2.0以上才支持多架构镜像）
 docker buildx build -t "$base" --platform=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 "$dir" --push
 
+docker pull "$base"
 # 验证镜像不同架构版本
 # imglist=$(docker buildx imagetools inspect "$base" | grep -E -o "${base}@sha256.*")
 
 docker buildx imagetools inspect "$base"
+
+# 打tag标记为glibc
+docker tag "$base" "${registry}/busybox:${tag}"
+# push到远程仓库
+docker push "${registry}/busybox:${tag}"

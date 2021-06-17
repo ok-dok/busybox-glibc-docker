@@ -1,4 +1,11 @@
 # stage2: busybox
 FROM scratch as busybox
-COPY --from=builder /usr/src/busybox/rootfs/* /
+
+COPY --from=builder /usr/src/busybox/rootfs/ /
+
+# ensure command /bin/sh is available
+RUN sh -xec 'true'
+
+WORKDIR /root/
+
 CMD ["sh"]
