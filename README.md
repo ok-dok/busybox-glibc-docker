@@ -25,6 +25,8 @@ After build, it will generate one image that supports multiple architectures suc
 busybox:glibc镜像大小约28M。
 
 ## 更新说明
+---
+2021-6-17更新，升级busybox版本，增加具有版本号表示的镜像tag并推送至仓库；
 
 ---
 2021-4-22更新，新增多平台架构编译支持（buildx）, 目前支持以下平台架构：
@@ -73,7 +75,60 @@ busybox:glibc镜像大小约28M。
 否则，你需要修改Dockerfile.builder文件，添加相关依赖库。具体修改方法见[修改扩展说明](#修改扩展说明)。
 
 ## 多平台架构镜像构建方式
-直接在shell终端进入本目录执行脚本命令进行构建：
+构建之前，需要确保已安装最新版docker（包含buildx命令）。
+
+首先验证binfmt_misc是否已经开启：
+```
+$ ls -al /proc/sys/fs/binfmt_misc/
+总用量 0
+drwxr-xr-x. 2 root root 0 6月  17 15:53 .
+dr-xr-xr-x. 1 root root 0 5月  21 14:48 ..
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-aarch64
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-arm
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-mips64
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-mips64el
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-ppc64le
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-riscv64
+-rw-r--r--. 1 root root 0 6月  17 15:53 qemu-s390x
+--w-------. 1 root root 0 6月  17 15:53 register
+-rw-r--r--. 1 root root 0 6月  17 15:53 status
+```
+在列出的"qemu-\*"的文件中，输出看一下其状态：
+```
+$ cat /proc/sys/fs/binfmt_misc/qemu-arm 
+enabled
+interpreter /usr/bin/qemu-arm
+flags: OCF
+offset 0
+magic 7f454c4601010100000000000000000002002800
+mask ffffffffffffff00fffffffffffffffffeffffff
+```
+显示为enabled，则表示该平台已经开启支持。
+
+如果`/proc/sys/fs/binfmt_misc/`目录下没有`qemu-*`开头的文件，说明还未开启qemu支持，这需要开启binfmt_misc：
+
+执行下面这个命令：
+```
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+然后在重新验证binfmt_misc是否已经开启。
+
+
+然后创建多平台构建器，首先查看当前的构建器：
+```
+docker context ls
+```
+新增一个构建器：
+```
+docker buildx create --use --name mybuilder
+```
+
+启动该构建器：
+```
+docker buildx inspect mybuilder --bootstrap
+```
+
+最后直接在shell终端进入本目录执行脚本命令进行构建：
 
 ```shell
 sh buildx.sh
