@@ -128,6 +128,11 @@ docker buildx create --use --name mybuilder
 docker buildx inspect mybuilder --bootstrap
 ```
 
+查看构建器及其所支持的cpu架构：
+```
+docker buildx ls
+```
+
 最后直接在shell终端进入本目录执行脚本命令进行构建：
 
 ```shell
