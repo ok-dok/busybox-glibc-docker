@@ -30,7 +30,7 @@ RUN set -eux; \
 # sub   1024g/2C766641 2006-12-12
 RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys C9E9416F76E610DBD09D040F47B70C55ACC9965B
 
-ENV BUSYBOX_VERSION="1.33.1"
+ARG BUSYBOX_VERSION
 
 RUN set -eux; \
         tarball="busybox-${BUSYBOX_VERSION}.tar.bz2"; \
